@@ -1,0 +1,16 @@
+#微服务配置
+spring:
+  application:
+    #服务名
+    name: system-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #连接的数据库
+    url: jdbc:mysql://192.168.101.65:3306/xc402_system?serverTimezone=UTC&userUnicode=true&useSSL=false&
+    username: root
+    password: mysql
+# 日志文件配置路径
+logging:
+  config: classpath:log4j2-dev.xml
+
+

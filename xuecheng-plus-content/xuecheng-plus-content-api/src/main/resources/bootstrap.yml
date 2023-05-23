@@ -1,0 +1,29 @@
+server:
+  servlet:
+    #属于所有接口的根路径
+    context-path: /content
+    #服务端口
+  port: 63040
+#微服务配置
+spring:
+  application:
+    #服务名
+    name: content-api
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #连接的数据库
+    url: jdbc:mysql://192.168.101.65:3306/xc402_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
+    username: root
+    password: mysql
+# 日志文件配置路径
+logging:
+  config: classpath:log4j2-dev.xml
+
+swagger:
+  title: "学成在线内容管理系统"
+  description: "内容系统管理系统对课程相关信息进行管理"
+  #配置接口类所在的包路径
+  base-package: com.xuecheng.content
+  enabled: true
+  version: 1.0.0
+
