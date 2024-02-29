@@ -1,14 +1,32 @@
 #微服务配置
 spring:
+  #application和cloud不能够配到nacos因为，项目注册到nacos需要这些信息
   application:
     #服务名
     name: content-service
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    #连接的数据库
-    url: jdbc:mysql://192.168.101.65:3306/xc402_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
-    username: root
-    password: mysql
+  cloud:
+    nacos:
+      server-addr: 192.168.101.65:8848
+      #不管是你的服务还是配置都是在命名空间下
+      #这个配置是让我们自己获取nacos上的配置文件，配置文件相关配置
+      config:
+        #namespace表示配置在dev402命名空间下
+        namespace: dev402
+        #group说明了配置文件属于的组
+        group: xuecheng-plus-project
+        #配置文件扩展名
+        file-extension: yaml
+        refresh-enabled: true
+
+
+  profiles:
+    active: dev #环境名
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    #连接的数据库
+#    url: jdbc:mysql://192.168.101.65:3306/xc402_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
+#    username: root
+#    password: mysql
 # 日志文件配置路径
 logging:
   config: classpath:log4j2-dev.xml

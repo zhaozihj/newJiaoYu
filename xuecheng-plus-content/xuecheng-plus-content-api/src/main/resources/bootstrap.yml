@@ -1,29 +1,76 @@
-server:
-  servlet:
-    #属于所有接口的根路径
-    context-path: /content
-    #服务端口
-  port: 63040
+#server:
+#  servlet:
+#    #属于所有接口的根路径
+#    context-path: /content
+#    #服务端口
+#  port: 63040
 #微服务配置
 spring:
+  #application和cloud不能够配到nacos因为，项目注册到nacos需要这些信息
   application:
     #服务名
     name: content-api
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    #连接的数据库
-    url: jdbc:mysql://192.168.101.65:3306/xc402_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
-    username: root
-    password: mysql
+  cloud:
+    nacos:
+      server-addr: 192.168.101.65:8848
+      #不管是你的服务还是配置都是在命名空间下
+      #这个配置是让nacos发现服务，服务注册相关配置
+      discovery:
+        #说明这个服务要放在哪个命名空间中，命名空间通常是开发环境，测试环境之类的
+        namespace: dev402
+        #group说明这个服务是属于哪个项目
+        group: xuecheng-plus-project
+      #这个配置是让我们自己获取nacos上的配置文件，配置文件相关配置
+      config:
+        #namespace表示配置在dev402命名空间下
+        namespace: dev402
+        #group说明了配置文件属于的组
+        group: xuecheng-plus-project
+        #配置文件扩展名
+        file-extension: yaml
+        refresh-enabled: true
+        #这个就是扩展了content-service服务在nacos中的配置文件，就是把content-service服务在nacos中的配置文件也给content-api服务用
+        #因为content-api服务依赖于content-service服务，所以要拿到content-service的配置文件
+        extension-configs:
+            #${spring.profiles.active}这种写法就是在bootstrap.yml文件中找到了spring属性下的profiles属性下的active也就是dev
+          - data-id: content-service-${spring.profiles.active}.yaml
+            group: xuecheng-plus-project
+            refresh: true
+        shared-configs:
+          #找到swagger那个公共配置文件
+          - data-id: swagger-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+          #找到logging那个公共配置文件
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+          - data-id: freemarker-config-dev.yaml
+            group: xuecheng-plus-common
+            refresh: true
+
+
+  #  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    #连接的数据库
+#    url: jdbc:mysql://192.168.101.65:3306/xc402_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
+#    username: root
+#    password: mysql
+
+  #这个content项目特有配置文件在nacos中命名为content-api-dev.yaml  也就是  服务名+环境名+当前配置文件后缀名
+  #环境名是下面这个，而不是命名空间
+  profiles:
+    active: dev #环境名
+
 # 日志文件配置路径
-logging:
-  config: classpath:log4j2-dev.xml
+#logging:
+#  config: classpath:log4j2-dev.xml
 
-swagger:
-  title: "学成在线内容管理系统"
-  description: "内容系统管理系统对课程相关信息进行管理"
-  #配置接口类所在的包路径
-  base-package: com.xuecheng.content
-  enabled: true
-  version: 1.0.0
-
+#swagger:
+#  title: "学成在线内容管理系统"
+#  description: "内容系统管理系统对课程相关信息进行管理"
+#  #配置接口类所在的包路径
+#  base-package: com.xuecheng.content
+#  enabled: true
+#  version: 1.0.0
+#
